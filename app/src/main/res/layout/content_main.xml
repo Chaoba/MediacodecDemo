@@ -14,8 +14,15 @@
     tools:context="com.mushuichuan.mediacodecdemo.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <SurfaceView
+        android:id="@+id/surface_view"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:layout_alignParentBottom="true"
+        android:text="start"/>
 </RelativeLayout>
