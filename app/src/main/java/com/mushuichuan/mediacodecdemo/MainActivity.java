@@ -1,6 +1,7 @@
 package com.mushuichuan.mediacodecdemo;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     SurfaceView mSurfaceView;
+    private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/DCIM/Camera/20161013_140201.mp4";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,12 +20,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        final VideoDecoder decoder = new VideoDecoder(mSurfaceView.getHolder().getSurface());
+        final FileVideoDecoder decoder = new FileVideoDecoder(mSurfaceView.getHolder().getSurface());
 
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                decoder.start();
+                decoder.start(SAMPLE);
             }
         });
 

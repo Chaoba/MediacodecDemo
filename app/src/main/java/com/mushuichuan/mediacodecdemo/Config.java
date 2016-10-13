@@ -5,4 +5,5 @@ package com.mushuichuan.mediacodecdemo;
  */
 
 public class Config {
+    public static final String VIDEO_MIME = "video/avc";
 }

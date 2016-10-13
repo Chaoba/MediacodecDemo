@@ -1,9 +1,8 @@
 package com.mushuichuan.mediacodecdemo;
 
 import android.media.MediaCodec;
-import android.media.MediaExtractor;
 import android.media.MediaFormat;
-import android.os.Environment;
+import android.os.Build;
 import android.view.Surface;
 
 import java.io.IOException;
@@ -14,90 +13,111 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
 
+import static android.media.MediaCodec.BUFFER_FLAG_END_OF_STREAM;
+
 /**
+ * A video decoder use Mediacodec decode video
  * Created by yanshun.li on 10/11/16.
  */
 
 public class VideoDecoder {
-    private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/DCIM/Camera/20161013_140201.mp4";
     private final Surface mSurface;
-    private MediaExtractor mMediaExtractor;
     private MediaCodec mDecoder;
+    private Subscriber mSubscriber;
 
     public VideoDecoder(Surface surface) {
         mSurface = surface;
     }
 
-    public void start() {
-        mMediaExtractor = new MediaExtractor();
+    /**
+     * {csd-1=java.nio.ByteArrayBuffer[position=0,limit=9,capacity=9],
+     * mime=video/avc,
+     * frame-rate=30,
+     * rotation=90,
+     * rotation-degrees=90,
+     * height=1080,
+     * width=1920,
+     * max-input-size=1572864,
+     * isDMCMMExtractor=1,
+     * durationUs=3497822,
+     * csd-0=java.nio.ByteArrayBuffer[position=0,limit=20,capacity=20]}
+     */
+    public void config(MediaFormat mediaFormat) {
         try {
-            mMediaExtractor.setDataSource(SAMPLE);
+            mDecoder = MediaCodec.createDecoderByType(Config.VIDEO_MIME);
+            mDecoder.configure(mediaFormat, mSurface, null, 0);
+            mDecoder.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Observable.range(0, mMediaExtractor.getTrackCount())
-                .filter(new Func1<Integer, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer) {
-                        //find the video track
-                        MediaFormat mediaFormat = mMediaExtractor.getTrackFormat(integer);
-                        String mime = mediaFormat.getString(MediaFormat.KEY_MIME);
-                        Logger.d(mime);
-                        return mime.startsWith("video");
-                    }
-                })
-                .flatMap(new Func1<Integer, Observable<Long>>() {
-                    @Override
-                    public Observable<Long> call(Integer integer) {
-                        //create decoder according the video track
-                        MediaFormat mediaFormat = mMediaExtractor.getTrackFormat(integer);
-                        String mime = mediaFormat.getString(MediaFormat.KEY_MIME);
-                        Logger.d(mime);
-                        mMediaExtractor.selectTrack(integer);
-                        try {
-                            mDecoder = MediaCodec.createDecoderByType(mime);
-                            mDecoder.configure(mediaFormat, mSurface, null, 0);
-                            mDecoder.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        return Observable.interval(33, TimeUnit.MILLISECONDS);
-                    }
-                })
+    }
+
+    public void config(int width, int height, ByteBuffer csd0) {
+        MediaFormat format = MediaFormat.createVideoFormat(Config.VIDEO_MIME, width, height);
+        format.setByteBuffer("csd-0", csd0);
+        config(format);
+    }
+
+    public int dequeueInputBuffer(long timeout) {
+        return mDecoder.dequeueInputBuffer(timeout);
+    }
+
+    public ByteBuffer getInputBuffer(int index) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return mDecoder.getInputBuffers()[index];
+        } else {
+            return mDecoder.getInputBuffer(index);
+        }
+    }
+
+    /**
+     * queue data to the input buffer of codec
+     */
+    public void queueInputBuffer(int inIndex, int offset, int size, long presentationTimeUs, int flags) {
+        mDecoder.queueInputBuffer(inIndex, offset, size, presentationTimeUs, flags);
+    }
+
+
+    /**
+     * start to render the content to the surfaceview
+     */
+    public void start() {
+        if (mSubscriber != null && !mSubscriber.isUnsubscribed()) {
+            mSubscriber.unsubscribe();
+        }
+        mSubscriber = new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                stop();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                stop();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    stop();
+                    unsubscribe();
+                }
+
+            }
+        };
+
+        Observable.interval(33, TimeUnit.MILLISECONDS)
                 .map(new Func1<Long, Boolean>() {
                     @Override
                     public Boolean call(Long aLong) {
-                        int inIndex = mDecoder.dequeueInputBuffer(10000);
-                        if (inIndex >= 0) {
-                            ByteBuffer buffer = mDecoder.getInputBuffer(inIndex);
-                            int sampleSize = mMediaExtractor.readSampleData(buffer, 0);
-                            if (sampleSize < 0) {
-                                Logger.d("Input buffer eos");
-                                mDecoder.queueInputBuffer(inIndex, 0, 0, 0, MediaCodec.BUFFER_FLAG_END_OF_STREAM);
-                            } else {
-                                mDecoder.queueInputBuffer(inIndex, 0, sampleSize, mMediaExtractor.getSampleTime(), 0);
-                                mMediaExtractor.advance();
-                            }
-                        }
-
                         MediaCodec.BufferInfo info = new MediaCodec.BufferInfo();
                         int outIndex = mDecoder.dequeueOutputBuffer(info, 10000);
-                        switch (outIndex) {
-                            case MediaCodec.INFO_OUTPUT_FORMAT_CHANGED:
-                                Logger.d("INFO_OUTPUT_FORMAT_CHANGED: " + mDecoder.getOutputFormat());
-                                break;
-                            case MediaCodec.INFO_TRY_AGAIN_LATER:
-                                Logger.d("INFO_TRY_AGAIN_LATER");
-                                break;
-                            default:
-                                if (outIndex > 0) {
-                                    mDecoder.releaseOutputBuffer(outIndex, true);
-                                }
+                        if (outIndex > 0) {
+                            mDecoder.releaseOutputBuffer(outIndex, true);
                         }
 
-                        // All decoded frames have been rendered, we can stop playing now
-                        if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                            Logger.d("DecodeActivity", "OutputBuffer BUFFER_FLAG_END_OF_STREAM");
+                        if ((info.flags & BUFFER_FLAG_END_OF_STREAM) != 0) {
+                            Logger.d("OutputBuffer BUFFER_FLAG_END_OF_STREAM");
                             return true;
                         }
                         return false;
@@ -106,30 +126,30 @@ public class VideoDecoder {
                 .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
-                        release();
+                        stop();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        release();
+                        stop();
                     }
 
                     @Override
                     public void onNext(Boolean aBoolean) {
                         if (aBoolean) {
-                            release();
+                            stop();
                             unsubscribe();
                         }
-
                     }
                 });
 
-
     }
 
-    private void release() {
+    /**
+     * stop decoder
+     */
+    public void stop() {
         mDecoder.stop();
         mDecoder.release();
-        mMediaExtractor.release();
     }
 }
