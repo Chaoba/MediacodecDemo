@@ -20,9 +20,17 @@
         android:layout_height="300dp"/>
 
     <Button
+        android:layout_below="@id/surface_view"
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="start"/>
+        android:text="Render"/>
+
+    <Button
+        android:id="@+id/decode_file_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button"
+        android:text="Decode File"/>
+
 </RelativeLayout>

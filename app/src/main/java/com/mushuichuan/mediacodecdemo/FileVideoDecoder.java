@@ -20,6 +20,7 @@ import rx.functions.Func1;
 public class FileVideoDecoder {
     private MediaExtractor mMediaExtractor;
     private VideoDecoder mDecoder;
+    private Subscriber mSubscriber;
 
     public FileVideoDecoder(Surface surface) {
         mDecoder = new VideoDecoder(surface);
@@ -32,6 +33,29 @@ public class FileVideoDecoder {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (mSubscriber != null && !mSubscriber.isUnsubscribed()) {
+            mSubscriber.unsubscribe();
+        }
+        mSubscriber = new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                stop();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                stop();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    stop();
+                    unsubscribe();
+                }
+
+            }
+        };
         Observable.range(0, mMediaExtractor.getTrackCount())
                 .filter(new Func1<Integer, Boolean>() {
                     @Override
@@ -46,12 +70,12 @@ public class FileVideoDecoder {
                 .flatMap(new Func1<Integer, Observable<Long>>() {
                     @Override
                     public Observable<Long> call(Integer integer) {
-                        //create decoder according the video track
+                        //create mFileDecoder according the video track
 
                         MediaFormat mediaFormat = mMediaExtractor.getTrackFormat(integer);
                         mMediaExtractor.selectTrack(integer);
                         mDecoder.config(mediaFormat);
-                        return Observable.interval(33, TimeUnit.MILLISECONDS);
+                        return Observable.interval(Config.INTERVAL, TimeUnit.MILLISECONDS);
                     }
                 })
                 .map(new Func1<Long, Boolean>() {
@@ -73,33 +97,25 @@ public class FileVideoDecoder {
                         return false;
                     }
                 })
-                .subscribe(new Subscriber<Boolean>() {
-                    @Override
-                    public void onCompleted() {
-                        release();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        release();
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            release();
-                            unsubscribe();
-                        }
-
-                    }
-                });
+                .subscribe(mSubscriber);
 
         mDecoder.start();
 
     }
 
-    private void release() {
-//        mDecoder.stop();
-        mMediaExtractor.release();
+    public boolean isPlaying() {
+        return (mSubscriber != null && !mSubscriber.isUnsubscribed());
+    }
+
+    public void stop() {
+        if (mSubscriber != null && !mSubscriber.isUnsubscribed()) {
+            mSubscriber.unsubscribe();
+        }
+        if (mDecoder != null) {
+            mDecoder.stop();
+        }
+        if (mMediaExtractor != null) {
+            mMediaExtractor.release();
+        }
     }
 }
