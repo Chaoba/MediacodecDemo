@@ -15,13 +15,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.mushuichuan.mediacodecdemo.Mp4.Mp4Extractor;
+
 public class MainActivity extends AppCompatActivity {
     SurfaceView mSurfaceView;
-    private static String SAMPLE = Environment.getExternalStorageDirectory() + "/DCIM/Camera/20161013_140201.mp4";
+    private static String mFilePath = Environment.getExternalStorageDirectory() + "/DCIM/Camera/20161013_140201.mp4";
     SurfaceRender mSurfaceRender;
     FileVideoDecoder mFileDecoder;
     TextView mFilePathText;
-    private Button mFileButton, mRenderButton, mChooseButton;
+    private Button mFileButton, mRenderButton, mChooseButton,mSelfDefineButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         mSurfaceRender = new SurfaceRender(mSurfaceView.getHolder().getSurface());
 
         mFilePathText = (TextView) findViewById(R.id.file_path);
-        mFilePathText.setText(SAMPLE);
+        mFilePathText.setText(mFilePath);
         mFileButton = (Button) findViewById(R.id.button);
         mFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,12 +57,20 @@ public class MainActivity extends AppCompatActivity {
                 if (mFileDecoder.isPlaying()) {
                     mFileDecoder.stop();
                 } else {
-                    mFileDecoder.start(SAMPLE);
+                    mFileDecoder.start(mFilePath);
                 }
 
             }
         });
 
+        mSelfDefineButton = (Button) findViewById(R.id.self_define_button);
+        mSelfDefineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Mp4Extractor mp4Extractor=new Mp4Extractor();
+                mp4Extractor.setDataSource(mFilePath);
+            }
+        });
         mChooseButton = (Button) findViewById(R.id.decode_file_button);
         mChooseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = data.getData();
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             if (cursor.moveToFirst()) {
-                SAMPLE = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
-                mFilePathText.setText(SAMPLE);
+                mFilePath = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                mFilePathText.setText(mFilePath);
             }
 
         }
