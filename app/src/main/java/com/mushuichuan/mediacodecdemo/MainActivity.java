@@ -1,7 +1,11 @@
 package com.mushuichuan.mediacodecdemo;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -9,14 +13,15 @@ import android.view.MenuItem;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     SurfaceView mSurfaceView;
-    private static final String SAMPLE = Environment.getExternalStorageDirectory() + "/DCIM/Camera/20161013_140201.mp4";
+    private static String SAMPLE = Environment.getExternalStorageDirectory() + "/DCIM/Camera/20161013_140201.mp4";
     SurfaceRender mSurfaceRender;
     FileVideoDecoder mFileDecoder;
-    private byte[] mBuffer;
-    private Button mFileButton, mRenderButton;
+    TextView mFilePathText;
+    private Button mFileButton, mRenderButton, mChooseButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
         mSurfaceRender = new SurfaceRender(mSurfaceView.getHolder().getSurface());
 
+        mFilePathText = (TextView) findViewById(R.id.file_path);
+        mFilePathText.setText(SAMPLE);
         mFileButton = (Button) findViewById(R.id.button);
         mFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSurfaceRender.isPlaying()){
+                if (mSurfaceRender.isPlaying()) {
                     mSurfaceRender.stop();
-                }else {
+                } else {
                     mSurfaceRender.start();
                 }
             }
@@ -45,15 +52,38 @@ public class MainActivity extends AppCompatActivity {
         mRenderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mFileDecoder.isPlaying()) {
+                if (mFileDecoder.isPlaying()) {
                     mFileDecoder.stop();
-                }else{
+                } else {
                     mFileDecoder.start(SAMPLE);
                 }
 
             }
         });
 
+        mChooseButton = (Button) findViewById(R.id.decode_file_button);
+        mChooseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 1);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                SAMPLE = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+                mFilePathText.setText(SAMPLE);
+            }
+
+        }
     }
 
     @Override

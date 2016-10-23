@@ -15,7 +15,7 @@ import java.util.Calendar;
  * Customized log class to show customized logcat and save logcat to files.
  */
 public final class Logger {
-    private static String CLASS_NAME;
+    private static String CLASS_NAME = Logger.class.getName();
     private static PrintWriter mOutStream = null;
     private static Calendar mCalendar = Calendar.getInstance();
     private static final String V = "V/";
@@ -41,10 +41,6 @@ public final class Logger {
     }
 
     private Logger() {
-    }
-
-    static {
-        CLASS_NAME = Logger.class.getName();
     }
 
     private static String getFunctionName() {
