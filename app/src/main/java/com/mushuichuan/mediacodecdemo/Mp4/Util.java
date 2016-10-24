@@ -17,6 +17,7 @@ public class Util {
     public static final int BITS_PER_BYTE = 8;
 
     public static byte[] getBoxBuffer(String path, String type) {
+        Logger.i("getBoxBuffer:" + path + " type: " + type);
         InputStream in;
         byte[] boxBuffer = new byte[0];
         try {
@@ -51,8 +52,14 @@ public class Util {
             }
         } catch (IOException e) {
             Logger.e(e);
-        }
+        }finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+        }
         return boxBuffer;
     }
 

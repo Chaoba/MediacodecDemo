@@ -5,16 +5,22 @@ package com.mushuichuan.mediacodecdemo.Mp4;
  */
 
 public class Mp4Extractor {
-
+    FtypBox ftypBox;
+    MoovBox moovBox;
     public Mp4Extractor() {
 
     }
 
-    public void setDataSource(String path){
+    public final int getTrackCount() {
+        return moovBox.trakBox.size();
+    }
+
+    public void setDataSource(String path) {
         byte[] ftyps = Util.getBoxBuffer(path, "ftyp");
-        Mp4Box ftypBox = new FtypBox().parse(ftyps, 0, ftyps.length);
+        ftypBox = new FtypBox(ftyps, 0);
 
         byte[] moovs = Util.getBoxBuffer(path, "moov");
-        Mp4Box moovBox = new Mp4Box().parse(moovs, 0, moovs.length);
+        moovBox = new MoovBox(moovs, 0);
+        moovBox.parseSub(moovs);
     }
 }

@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     SurfaceRender mSurfaceRender;
     FileVideoDecoder mFileDecoder;
     TextView mFilePathText;
-    private Button mFileButton, mRenderButton, mChooseButton,mSelfDefineButton;
+    private Button mFileButton, mRenderButton, mChooseButton, mSelfDefineButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         mSelfDefineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Mp4Extractor mp4Extractor=new Mp4Extractor();
+                Mp4Extractor mp4Extractor = new Mp4Extractor();
                 mp4Extractor.setDataSource(mFilePath);
+                Logger.i("track count:" + mp4Extractor.getTrackCount());
             }
         });
         mChooseButton = (Button) findViewById(R.id.decode_file_button);

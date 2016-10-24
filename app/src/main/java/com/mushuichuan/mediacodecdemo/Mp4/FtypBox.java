@@ -5,8 +5,8 @@ package com.mushuichuan.mediacodecdemo.Mp4;
  */
 
 public class FtypBox extends Mp4Box {
-
-    public FtypBox() {
+    public FtypBox(byte[] byteBuffer, int start) {
+        super(byteBuffer, start);
         hasSubBox = false;
         headSize = 12;
     }
