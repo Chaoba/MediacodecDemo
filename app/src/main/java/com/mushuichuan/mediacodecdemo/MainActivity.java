@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
                 Logger.i("track count:" + mp4Extractor.getTrackCount());
             }
         });
-        mChooseButton = (Button) findViewById(R.id.decode_file_button);
+
+        mChooseButton = (Button) findViewById(R.id.choose_file_button);
         mChooseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

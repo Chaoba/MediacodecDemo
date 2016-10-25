@@ -1,5 +1,7 @@
 package com.mushuichuan.mediacodecdemo.Mp4;
 
+import com.mushuichuan.mediacodecdemo.Logger;
+
 import java.util.ArrayList;
 
 /**
@@ -13,25 +15,27 @@ public class MoovBox extends Mp4Box {
 
     public MoovBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
+        parseSub(byteBuffer);
     }
 
     @Override
     public void parseSub(byte[] byteBuffer) {
-        int subStart = start + headSize;
-        long totalLength = 0;
+        int subStart = index;
         do {
-            String type = getType(byteBuffer, subStart);
-            int size = getSize(byteBuffer, subStart);
+            int size = getSize(byteBuffer);
+            String type = getType(byteBuffer);
             if (size > 8) {
                 if (type.equals("mvhd")) {
                     mvhdBox = new MvhdBox(byteBuffer, subStart);
+                    Logger.i(mvhdBox.toString());
                 } else if (type.equals("trak")) {
                     trakBox.add(new TrakBox(byteBuffer, subStart));
                 }
                 subStart += size;
+                index = subStart;
             } else {
                 break;
             }
-        } while (totalLength < start + size);
+        } while (subStart < end);
     }
 }

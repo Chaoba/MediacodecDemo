@@ -16,11 +16,10 @@ public class Mp4Extractor {
     }
 
     public void setDataSource(String path) {
-        byte[] ftyps = Util.getBoxBuffer(path, "ftyp");
-        ftypBox = new FtypBox(ftyps, 0);
+//        byte[] ftyps = Util.getBoxBuffer(path, "ftyp");
+//        ftypBox = new FtypBox(ftyps, 0);
 
         byte[] moovs = Util.getBoxBuffer(path, "moov");
         moovBox = new MoovBox(moovs, 0);
-        moovBox.parseSub(moovs);
     }
 }

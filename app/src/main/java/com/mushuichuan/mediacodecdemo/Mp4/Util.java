@@ -31,7 +31,7 @@ public class Util {
                 byte[] lenTypeBuffer = new byte[FOUR_BYTES * 2];
                 in.read(lenTypeBuffer);
 
-                int length = get32IntFromBuffer(lenTypeBuffer, 0);
+                int length = getIntFromBuffer(lenTypeBuffer, 0, 4);
                 String boxType = getStringFromBuffer(lenTypeBuffer, FOUR_BYTES, FOUR_BYTES);
 
                 if (type.equals(boxType)) {
@@ -52,7 +52,7 @@ public class Util {
             }
         } catch (IOException e) {
             Logger.e(e);
-        }finally {
+        } finally {
             try {
                 in.close();
             } catch (IOException e) {
@@ -63,25 +63,27 @@ public class Util {
         return boxBuffer;
     }
 
-    public static int get32IntFromBuffer(byte[] buffer, int start) {
+
+    public static int getIntFromBuffer(byte[] buffer, int start, int byteCount) {
         int result = 0;
-        if (buffer.length - start >= FOUR_BYTES) {
-            for (int i = 0; i < FOUR_BYTES; i++) {
-                result |= (buffer[start + i] & 0xff) << BITS_PER_BYTE * (FOUR_BYTES - i - 1);
+        if (buffer.length - start >= byteCount) {
+            for (int i = 0; i < byteCount; i++) {
+                result |= (buffer[start + i] & 0xff) << BITS_PER_BYTE * (byteCount - i - 1);
             }
         }
         return result;
     }
 
-    public static long get64LongFromBuffer(byte[] buffer, int start) {
+    public static long getLongFromBuffer(byte[] buffer, int start) {
         long result = 0;
-        if (buffer.length - start >= FOUR_BYTES) {
-            for (int i = 0; i < EIGHT_BYTES; i++) {
-                result |= (buffer[start + i] & 0xff) << BITS_PER_BYTE * (EIGHT_BYTES - i - 1);
+        if (buffer.length - start >= 8) {
+            for (int i = 0; i < 8; i++) {
+                result |= (buffer[start + i] & 0xff) << BITS_PER_BYTE * (8 - i - 1);
             }
         }
         return result;
     }
+
 
     /**
      * @param buffer

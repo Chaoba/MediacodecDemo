@@ -68,10 +68,10 @@ public class VideoDecoder {
 
 
     /**
-     * start to render the content to the surfaceview
+     * index to render the content to the surfaceview
      */
     public void start() {
-        Logger.i("start");
+        Logger.i("index");
         if (mSubscriber != null && !mSubscriber.isUnsubscribed()) {
             mSubscriber.unsubscribe();
         }
