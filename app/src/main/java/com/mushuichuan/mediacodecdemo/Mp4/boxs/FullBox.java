@@ -1,12 +1,12 @@
-package com.mushuichuan.mediacodecdemo.Mp4;
+package com.mushuichuan.mediacodecdemo.Mp4.boxs;
 
 /**
  * Created by yanshun.li on 10/25/16.
  */
 
 public class FullBox extends Mp4Box {
-    int version;
-    int flag;
+    public int version;
+    public int flag;
 
     public FullBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);

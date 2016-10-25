@@ -1,4 +1,7 @@
-package com.mushuichuan.mediacodecdemo.Mp4;
+package com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub;
+
+import com.mushuichuan.mediacodecdemo.Logger;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.FullBox;
 
 import java.util.Arrays;
 
@@ -7,17 +10,17 @@ import java.util.Arrays;
  */
 
 public class TkhdBox extends FullBox {
-    long creationTime;
-    long modificationTime;
-    int trackId;
-    long duration;
+    public long creationTime;
+    public long modificationTime;
+    public int trackId;
+    public long duration;
 
-    int layer;
-    int alternateGroup;
-    int volume;
-    int[] matrix = new int[9];
-    int width;
-    int height;
+    public int layer;
+    public int alternateGroup;
+    public int volume;
+    public int[] matrix = new int[9];
+    public int width;
+    public int height;
 
     public TkhdBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
@@ -47,6 +50,7 @@ public class TkhdBox extends FullBox {
         }
         width = getIntFromBuffer(byteBuffer, 4);
         height = getIntFromBuffer(byteBuffer, 4);
+        Logger.i(toString());
     }
 
     @Override

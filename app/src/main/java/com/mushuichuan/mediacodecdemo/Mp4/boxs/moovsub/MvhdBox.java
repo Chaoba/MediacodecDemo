@@ -1,4 +1,7 @@
-package com.mushuichuan.mediacodecdemo.Mp4;
+package com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub;
+
+import com.mushuichuan.mediacodecdemo.Logger;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.FullBox;
 
 import java.util.Arrays;
 
@@ -8,17 +11,17 @@ import java.util.Arrays;
 
 public class MvhdBox extends FullBox {
 
-    long creationTime;
-    long modificationTime;
-    int timescale;
-    long duration;
+    public long creationTime;
+    public long modificationTime;
+    public int timescale;
+    public long duration;
 
-    int rate;
-    int volume;
-    int reserved = 0;
-    int[] matrix = new int[9];
-    int[] preDefined = new int[6];
-    int nextTrackId;
+    public int rate;
+    public int volume;
+    public int reserved = 0;
+    public int[] matrix = new int[9];
+    public int[] preDefined = new int[6];
+    public int nextTrackId;
 
     public MvhdBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
@@ -46,6 +49,7 @@ public class MvhdBox extends FullBox {
 
         }
         nextTrackId = getIntFromBuffer(byteBuffer, 4);
+        Logger.i(toString());
     }
 
     @Override

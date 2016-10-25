@@ -1,14 +1,16 @@
-package com.mushuichuan.mediacodecdemo.Mp4;
+package com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub;
 
-import com.mushuichuan.mediacodecdemo.Logger;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.Mp4Box;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.MdiaBox;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.TkhdBox;
 
 /**
  * Created by yanshun.li on 10/24/16.
  */
 
 public class TrakBox extends Mp4Box {
-    TkhdBox mTkhdBox;
-    MdiaBox mMdiaBox;
+    public TkhdBox mTkhdBox;
+    public MdiaBox mMdiaBox;
 
     public TrakBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
@@ -24,8 +26,7 @@ public class TrakBox extends Mp4Box {
             if (size > 8) {
                 if (type.equals("tkhd")) {
                     mTkhdBox = new TkhdBox(byteBuffer, subStart);
-                    Logger.i(mTkhdBox.toString());
-                } else if (type.equals("mMdiaBox")) {
+                } else if (type.equals("mdia")) {
                     mMdiaBox = new MdiaBox(byteBuffer, subStart);
                 }
                 subStart += size;

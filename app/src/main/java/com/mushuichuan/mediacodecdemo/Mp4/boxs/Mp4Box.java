@@ -1,6 +1,7 @@
-package com.mushuichuan.mediacodecdemo.Mp4;
+package com.mushuichuan.mediacodecdemo.Mp4.boxs;
 
 import com.mushuichuan.mediacodecdemo.Logger;
+import com.mushuichuan.mediacodecdemo.Mp4.Util;
 
 import static com.mushuichuan.mediacodecdemo.Mp4.Util.BITS_PER_BYTE;
 
@@ -49,7 +50,7 @@ public class Mp4Box {
     }
 
     public String getType(byte[] byteBuffer) {
-        final String stringFromBuffer = getStringFromBuffer(byteBuffer, index, 4);
+        final String stringFromBuffer = getStringFromBuffer(byteBuffer, 4);
         index += 4;
         return stringFromBuffer;
     }
@@ -82,17 +83,11 @@ public class Mp4Box {
         return result;
     }
 
-    /**
-     * @param buffer
-     * @param start
-     * @param size
-     * @return
-     */
-    public static String getStringFromBuffer(byte[] buffer, int start, int size) {
+    public String getStringFromBuffer(byte[] buffer, int size) {
         char[] result = new char[size];
-        if (buffer.length - start >= size) {
+        if (buffer.length - index >= size) {
             for (int i = 0; i < size; i++) {
-                result[i] = (char) (buffer[start + i] & 0xff);
+                result[i] = (char) (buffer[index + i] & 0xff);
             }
         }
         return String.valueOf(result);

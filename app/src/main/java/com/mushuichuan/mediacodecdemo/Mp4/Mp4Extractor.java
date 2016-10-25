@@ -1,5 +1,12 @@
 package com.mushuichuan.mediacodecdemo.Mp4;
 
+import android.media.MediaFormat;
+
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.FtypBox;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.MoovBox;
+
+import java.util.Map;
+
 /**
  * Created by yanshun.li on 10/23/16.
  */
@@ -7,6 +14,7 @@ package com.mushuichuan.mediacodecdemo.Mp4;
 public class Mp4Extractor {
     FtypBox ftypBox;
     MoovBox moovBox;
+
     public Mp4Extractor() {
 
     }
@@ -21,5 +29,16 @@ public class Mp4Extractor {
 
         byte[] moovs = Util.getBoxBuffer(path, "moov");
         moovBox = new MoovBox(moovs, 0);
+    }
+
+    public MediaFormat getTrackFormat(int index) {
+        MediaFormat mediaFormat = new MediaFormat();
+
+
+        return mediaFormat;
+    }
+
+    private Map<String, Object> getTrackFormatMap(int index) {
+        return null;
     }
 }
