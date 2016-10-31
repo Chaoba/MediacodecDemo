@@ -2,6 +2,7 @@ package com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub;
 
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.Mp4Box;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.stblsub.Co64Box;
+import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.stblsub.CttsBox;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.stblsub.StcoBox;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.stblsub.StscBox;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.stblsub.StsdBox;
@@ -22,6 +23,7 @@ public class StblBox extends Mp4Box {
     public StscBox mStscBox;
     public StcoBox mStcoBox;
     public Co64Box mCo64Box;
+    public CttsBox mCttsBox;
 
     public StblBox(byte[] byteBuffer, int start, String type) {
         super(byteBuffer, start);
@@ -47,6 +49,8 @@ public class StblBox extends Mp4Box {
                 mStcoBox = new StcoBox(byteBuffer, subStart);
             } else if (type.equals("Co64")) {
                 mCo64Box = new Co64Box(byteBuffer, subStart);
+            } else if (type.equals("ctts")) {
+                mCttsBox = new CttsBox(byteBuffer, subStart);
             }
             subStart += size;
             index = subStart;
