@@ -1,6 +1,5 @@
 package com.mushuichuan.mediacodecdemo.Mp4.boxs;
 
-import com.mushuichuan.mediacodecdemo.Logger;
 import com.mushuichuan.mediacodecdemo.Mp4.Util;
 
 import static com.mushuichuan.mediacodecdemo.Mp4.Util.BITS_PER_BYTE;
@@ -43,7 +42,7 @@ public class Mp4Box {
         }
 
 
-        Logger.i(type + " size:" + size + " index:" + start);
+//        Logger.i(type + " size:" + size + " index:" + start);
     }
 
     public void parseSub(byte[] byteBuffer) {

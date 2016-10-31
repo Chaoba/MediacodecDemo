@@ -6,8 +6,8 @@ import com.mushuichuan.mediacodecdemo.Mp4.boxs.Mp4Box;
  * Created by yanshun.li on 10/26/16.
  */
 
-public class Stz2Box extends Mp4Box {
-    public Stz2Box(byte[] byteBuffer, int start) {
+public class StszBox extends Mp4Box {
+    public StszBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
     }
 }

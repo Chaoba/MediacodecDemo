@@ -13,6 +13,7 @@ public class MdiaBox extends Mp4Box {
     HdlrBox mHdlrBox;
     MdhdBox mMdhdBox;
     MinfBox mMinfBox;
+    String componentName;
 
     public MdiaBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
@@ -28,10 +29,11 @@ public class MdiaBox extends Mp4Box {
             if (size > 8) {
                 if (type.equals("hdlr")) {
                     mHdlrBox = new HdlrBox(byteBuffer, subStart);
+                    componentName = mHdlrBox.componentName;
                 } else if (type.equals("mdhd")) {
                     mMdhdBox = new MdhdBox(byteBuffer, subStart);
                 } else if (type.equals("minf")) {
-                    mMinfBox = new MinfBox(byteBuffer, subStart);
+                    mMinfBox = new MinfBox(byteBuffer, subStart, componentName);
                 }
                 subStart += size;
                 index = subStart;

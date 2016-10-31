@@ -9,9 +9,12 @@ import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.S
 
 public class MinfBox extends Mp4Box {
     StblBox mStblBox;
+    private String mType;
 
-    public MinfBox(byte[] byteBuffer, int start) {
+    public MinfBox(byte[] byteBuffer, int start, String type) {
         super(byteBuffer, start);
+        mType = type;
+        parseSub(byteBuffer);
     }
 
     @Override
@@ -22,7 +25,7 @@ public class MinfBox extends Mp4Box {
             String type = getType(byteBuffer);
             if (size > 8) {
                 if (type.equals("stbl")) {
-                    mStblBox = new StblBox(byteBuffer, subStart);
+                    mStblBox = new StblBox(byteBuffer, subStart,mType);
                 }
                 subStart += size;
                 index = subStart;
