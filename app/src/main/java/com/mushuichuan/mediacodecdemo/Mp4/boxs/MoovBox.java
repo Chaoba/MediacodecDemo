@@ -1,6 +1,5 @@
 package com.mushuichuan.mediacodecdemo.Mp4.boxs;
 
-import com.mushuichuan.mediacodecdemo.Logger;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.MvhdBox;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.TrakBox;
 
@@ -29,7 +28,6 @@ public class MoovBox extends Mp4Box {
             if (size > 8) {
                 if (type.equals("mvhd")) {
                     mvhdBox = new MvhdBox(byteBuffer, subStart);
-                    Logger.i(mvhdBox.toString());
                 } else if (type.equals("trak")) {
                     trakBox.add(new TrakBox(byteBuffer, subStart));
                 }

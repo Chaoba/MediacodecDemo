@@ -10,10 +10,10 @@ import com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.MinfBox;
  */
 
 public class MdiaBox extends Mp4Box {
-    HdlrBox mHdlrBox;
-    MdhdBox mMdhdBox;
-    MinfBox mMinfBox;
-    String componentName;
+    public HdlrBox mHdlrBox;
+    public MdhdBox mMdhdBox;
+    public MinfBox mMinfBox;
+    public String componentName;
 
     public MdiaBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
