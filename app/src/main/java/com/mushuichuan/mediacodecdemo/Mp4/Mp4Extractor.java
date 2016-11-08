@@ -24,8 +24,8 @@ public class Mp4Extractor {
     }
 
     public void setDataSource(String path) {
-//        byte[] ftyps = Util.getBoxBuffer(path, "ftyp");
-//        ftypBox = new FtypBox(ftyps, 0);
+        byte[] ftyps = Util.getBoxBuffer(path, "ftyp");
+        ftypBox = new FtypBox(ftyps, 0);
 
         byte[] moovs = Util.getBoxBuffer(path, "moov");
         moovBox = new MoovBox(moovs, 0);
@@ -48,7 +48,7 @@ public class Mp4Extractor {
     public MediaFormat getTrackFormat(int index) {
         MediaFormat mediaFormat = new MediaFormat();
 //        byte[] sps = {0, 0, 0, 1, 103, 100, 0, 40, -84, 52, -59, 1, -32, 17, 31, 120, 11, 80, 16, 16, 31, 0, 0, 3, 3, -23, 0, 0, -22, 96, -108};
-//        byte[] pps = {0, 0, 0, 1, 104, -18, 60, -128};
+//       byte[] pps = {0, 0, 0, 1, 104, -18, 60, -128};
 //        mediaFormat.setByteBuffer("csd-0", ByteBuffer.wrap(sps));
 //        mediaFormat.setByteBuffer("csd-1", ByteBuffer.wrap(pps));
 //        TrakBox trakBox = null;
