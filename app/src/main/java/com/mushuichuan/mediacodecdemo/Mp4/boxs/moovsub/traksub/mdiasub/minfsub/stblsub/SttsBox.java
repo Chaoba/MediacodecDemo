@@ -1,6 +1,9 @@
 package com.mushuichuan.mediacodecdemo.Mp4.boxs.moovsub.traksub.mdiasub.minfsub.stblsub;
 
+import com.mushuichuan.mediacodecdemo.Logger;
 import com.mushuichuan.mediacodecdemo.Mp4.boxs.FullBox;
+
+import java.util.Arrays;
 
 /**
  * (decoding) time-to-sample
@@ -21,5 +24,15 @@ public class SttsBox extends FullBox {
             sampleCount[i] = getIntFromBuffer(byteBuffer, 4);
             sampleDelta[i] = getIntFromBuffer(byteBuffer, 4);
         }
+        Logger.i(toString());
+    }
+
+    @Override
+    public String toString() {
+        return "SttsBox{" +
+                "entryCount=" + entryCount +
+                ", sampleCount=" + Arrays.toString(sampleCount) +
+                ", sampleDelta=" + Arrays.toString(sampleDelta) +
+                '}';
     }
 }

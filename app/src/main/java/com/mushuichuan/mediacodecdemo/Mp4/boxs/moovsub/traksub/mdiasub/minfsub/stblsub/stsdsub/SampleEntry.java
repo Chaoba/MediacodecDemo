@@ -11,8 +11,7 @@ public class SampleEntry extends Mp4Box {
 
     public SampleEntry(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
-        //skip 12 bytes reserved;
-        index += 12;
+        index += 6;
         dataReferenceIndex = getIntFromBuffer(byteBuffer, 2);
     }
 }

@@ -17,7 +17,7 @@ public class AudioSampleEntry extends SampleEntry {
         mChannelCount = getIntFromBuffer(byteBuffer, 2);
         mSampleSize = getIntFromBuffer(byteBuffer, 2);
         index += 2;
-        mSampleRate = (int) ((getIntFromBuffer(byteBuffer, 4) >> 16) & 0xffff);
+        mSampleRate = (getIntFromBuffer(byteBuffer, 4) >> 16) & 0xffff;
         Logger.i(toString());
     }
 

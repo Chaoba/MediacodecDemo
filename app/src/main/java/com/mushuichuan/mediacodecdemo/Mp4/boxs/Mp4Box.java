@@ -71,6 +71,12 @@ public class Mp4Box {
         return result;
     }
 
+    public char getCharFromBuffer(byte[] buffer) {
+        char result = (char) buffer[index];
+        index += 1;
+        return result;
+    }
+
     public long getLongFromBuffer(byte[] buffer) {
         long result = 0;
         if (buffer.length - index >= 8) {

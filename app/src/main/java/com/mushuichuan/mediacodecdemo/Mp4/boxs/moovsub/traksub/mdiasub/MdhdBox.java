@@ -12,7 +12,7 @@ public class MdhdBox extends FullBox {
     public long modificationTime;
     public int timescale;
     public long duration;
-    public int laguage;
+    public int language;
     public int predefined;
     public MdhdBox(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
@@ -27,7 +27,7 @@ public class MdhdBox extends FullBox {
             timescale = getIntFromBuffer(byteBuffer, 4);
             duration = getIntFromBuffer(byteBuffer, 4);
         }
-        laguage = getIntFromBuffer(byteBuffer, 2);
+        language = getIntFromBuffer(byteBuffer, 2);
         predefined = getIntFromBuffer(byteBuffer, 2);
         Logger.i(toString());
     }
@@ -39,7 +39,7 @@ public class MdhdBox extends FullBox {
                 ", modificationTime=" + modificationTime +
                 ", timescale=" + timescale +
                 ", duration=" + duration +
-                ", laguage=" + laguage +
+                ", language=" + language +
                 ", predefined=" + predefined +
                 '}';
     }

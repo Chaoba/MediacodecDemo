@@ -12,18 +12,20 @@ public class VisualSampleEntry extends SampleEntry {
     private final int mHorizeresolution;
     private final int mVertresolution;
     private final int mFrameCount;
-    private final String mCompressorName;
+    private String mCompressorName;
 
     public VisualSampleEntry(byte[] byteBuffer, int start) {
         super(byteBuffer, start);
-        index+=16;
+        index += 16;
         mWidth = getIntFromBuffer(byteBuffer, 2);
         mHeight = getIntFromBuffer(byteBuffer, 2);
         mHorizeresolution = getIntFromBuffer(byteBuffer, 4);
         mVertresolution = getIntFromBuffer(byteBuffer, 4);
-        index+=4;
+        index += 4;
         mFrameCount = getIntFromBuffer(byteBuffer, 2);
-        mCompressorName = getStringFromBuffer(byteBuffer, 4);
+        for (int i = 0; i < 32; i++) {
+            mCompressorName += getCharFromBuffer(byteBuffer);
+        }
         Logger.i(toString());
     }
 
