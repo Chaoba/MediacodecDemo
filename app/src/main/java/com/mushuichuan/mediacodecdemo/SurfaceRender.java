@@ -2,7 +2,6 @@ package com.mushuichuan.mediacodecdemo;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.media.MediaCodec;
 import android.text.TextPaint;
 import android.view.Surface;
@@ -35,7 +34,7 @@ public class SurfaceRender implements VideoEncoder.EncodeLister {
         mEncoder.setLister(this);
     }
 
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         return (mSubscriber != null && !mSubscriber.isUnsubscribed());
     }
 
@@ -79,25 +78,22 @@ public class SurfaceRender implements VideoEncoder.EncodeLister {
     }
 
 
+    int currentRadius = 10;
 
+    /**
+     * @param canvas
+     */
     void onDraw(Canvas canvas) {
-        Logger.v("onDraw");
-        // non-UI thread
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.BLUE);
 
-        // setting some text paint
         if (mPaint == null) {
             mPaint = new TextPaint();
             mPaint.setAntiAlias(true);
-            mPaint.setColor(Color.WHITE);
-            mPaint.setTextSize(30f);
-            mPaint.setTextAlign(Paint.Align.CENTER);
+            mPaint.setColor(Color.YELLOW);
         }
-
-        canvas.drawText(String.valueOf(System.currentTimeMillis()),
-                OUTPUT_WIDTH / 2,
-                OUTPUT_HEIGHT / 2,
-                mPaint);
+        canvas.drawCircle(OUTPUT_WIDTH / 2, OUTPUT_HEIGHT / 2, currentRadius, mPaint);
+        currentRadius += 10;
+        currentRadius = currentRadius > 100 ? 10 : currentRadius;
     }
 
     public void stop() {
